@@ -10,136 +10,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 body { background: #0a0a0a; color: #e8e8e8; min-height: 100vh; }
-
-/* TOPBAR */
-.topbar {
-  background: #0a0a0a;
-  border-bottom: 1px solid #1e1e1e;
-  padding: 16px 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.logo-text {
-  font-size: 22px;
-  font-weight: 300;
-  letter-spacing: 8px;
-  color: white;
-  text-transform: uppercase;
-}
-.logo-text span {
-  color: #cc0000;
-  font-weight: 400;
-}
-.logo-divider {
-  width: 1px;
-  height: 28px;
-  background: #333;
-}
-.logo-subtitle {
-  font-size: 11px;
-  letter-spacing: 3px;
-  color: #555;
-  text-transform: uppercase;
-}
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.last-updated {
-  font-size: 11px;
-  color: #444;
-  letter-spacing: 1px;
-}
-.refresh-btn {
-  padding: 7px 18px;
-  background: transparent;
-  color: #888;
-  border: 1px solid #2a2a2a;
-  border-radius: 4px;
-  font-size: 11px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.2s;
-}
+.topbar { background: #0a0a0a; border-bottom: 1px solid #1e1e1e; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
+.logo { display: flex; align-items: center; gap: 16px; }
+.logo-text { font-size: 22px; font-weight: 300; letter-spacing: 8px; color: white; text-transform: uppercase; }
+.logo-text span { color: #cc0000; font-weight: 400; }
+.logo-divider { width: 1px; height: 28px; background: #333; }
+.logo-subtitle { font-size: 11px; letter-spacing: 3px; color: #555; text-transform: uppercase; }
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+.last-updated { font-size: 11px; color: #444; letter-spacing: 1px; }
+.refresh-btn { padding: 7px 18px; background: transparent; color: #888; border: 1px solid #2a2a2a; border-radius: 4px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
 .refresh-btn:hover { border-color: #cc0000; color: #cc0000; }
-
-/* NAV */
-.nav {
-  background: #0d0d0d;
-  border-bottom: 1px solid #1a1a1a;
-  padding: 0 32px;
-  display: flex;
-  gap: 0;
-}
-.nav-btn {
-  padding: 14px 24px;
-  font-size: 11px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #444;
-  border: none;
-  background: none;
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s;
-  font-family: 'Inter', sans-serif;
-}
+.nav { background: #0d0d0d; border-bottom: 1px solid #1a1a1a; padding: 0 32px; display: flex; }
+.nav-btn { padding: 14px 24px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #444; border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; font-family: 'Inter', sans-serif; }
 .nav-btn:hover { color: #aaa; }
 .nav-btn.active { color: white; border-bottom: 2px solid #cc0000; }
-
-/* CONTENT */
 .content { padding: 32px; }
 .page { display: none; }
 .page.active { display: block; }
-
-/* PAGE HEADER */
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 28px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #1a1a1a;
-}
-.page-title {
-  font-size: 20px;
-  font-weight: 300;
-  letter-spacing: 2px;
-  color: white;
-  text-transform: uppercase;
-}
+.page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid #1a1a1a; }
+.page-title { font-size: 20px; font-weight: 300; letter-spacing: 2px; color: white; text-transform: uppercase; }
 .page-title span { color: #cc0000; }
 .page-date { font-size: 11px; color: #444; letter-spacing: 1px; }
-
-/* STATUS */
-.status {
-  padding: 12px 16px;
-  border-radius: 4px;
-  font-size: 12px;
-  letter-spacing: 1px;
-  margin-bottom: 24px;
-  border-left: 3px solid transparent;
-}
+.status { padding: 12px 16px; border-radius: 4px; font-size: 12px; letter-spacing: 1px; margin-bottom: 24px; border-left: 3px solid transparent; }
 .loading { background: #0f0f0f; border-left-color: #cc0000; color: #888; }
 .error { background: #1a0000; border-left-color: #cc0000; color: #ff4444; }
 .success { background: #0a0a0a; border-left-color: #2a7a4b; color: #444; }
-.spinner {
-  display: inline-block; width: 10px; height: 10px;
-  border: 1px solid #cc0000; border-top-color: transparent;
-  border-radius: 50%; animation: spin 0.8s linear infinite;
-  margin-right: 8px; vertical-align: middle;
-}
+.spinner { display: inline-block; width: 10px; height: 10px; border: 1px solid #cc0000; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
 @keyframes spin { to { transform: rotate(360deg); } }
-
-/* CARDS */
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1px; margin-bottom: 24px; background: #1a1a1a; border: 1px solid #1a1a1a; }
 .card { background: #0d0d0d; padding: 24px 20px; position: relative; overflow: hidden; transition: background 0.2s; }
 .card:hover { background: #111; }
@@ -148,13 +45,9 @@ body { background: #0a0a0a; color: #e8e8e8; min-height: 100vh; }
 .card-label { font-size: 10px; letter-spacing: 3px; color: #444; text-transform: uppercase; margin-bottom: 12px; }
 .card-value { font-size: 22px; font-weight: 300; color: white; }
 .card-sub { font-size: 10px; color: #333; margin-top: 6px; letter-spacing: 1px; text-transform: uppercase; }
-
-/* CHARTS */
 .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 24px; }
 .chart-box { background: #0d0d0d; border: 1px solid #1a1a1a; padding: 24px; }
 .chart-title { font-size: 10px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 20px; }
-
-/* TABLE */
 .table-box { background: #0d0d0d; border: 1px solid #1a1a1a; padding: 24px; overflow-x: auto; }
 .table-title { font-size: 10px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 20px; }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
@@ -162,34 +55,21 @@ th { text-align: left; padding: 10px 14px; color: #444; font-weight: 400; letter
 td { padding: 12px 14px; border-bottom: 1px solid #111; color: #aaa; }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: #111; color: #ccc; }
-
-/* BADGES */
 .badge { display: inline-block; padding: 3px 10px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; border: 1px solid; }
 .badge-Preferred { border-color: #1a3a6e; color: #4d7fc4; background: #0a1628; }
 .badge-VIP { border-color: #6e4a00; color: #c49a00; background: #1a1200; }
 .badge-Prime { border-color: #0d3d22; color: #2a9a5b; background: #061a0f; }
 .badge-PrimeA { border-color: #3d1a4e; color: #9a4dcc; background: #1a0a28; }
 .badge-Unknown { border-color: #2a2a2a; color: #555; background: #111; }
-
-.filter-btn {
-  padding: 6px 14px;
-  background: transparent;
-  color: #555;
-  border: 1px solid #2a2a2a;
-  font-size: 10px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: 'Inter', sans-serif;
-}
+.red-line { width: 40px; height: 2px; background: #cc0000; margin-bottom: 8px; }
+.filter-bar { display: flex; gap: 6px; }
+.filter-btn { padding: 6px 14px; background: transparent; color: #555; border: 1px solid #2a2a2a; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
 .filter-btn:hover { border-color: #cc0000; color: #cc0000; }
 .filter-btn.active { border-color: #cc0000; color: #cc0000; background: #1a0000; }
 </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
 <div class="topbar">
   <div class="logo">
     <div class="logo-text">ALPHA <span>X</span></div>
@@ -202,7 +82,6 @@ tr:hover td { background: #111; color: #ccc; }
   </div>
 </div>
 
-<!-- NAV -->
 <div class="nav">
   <button class="nav-btn active" onclick="showPage('overview', this)">Overview</button>
   <button class="nav-btn" onclick="showPage('customergroup', this)">Customer Group</button>
@@ -244,13 +123,13 @@ tr:hover td { background: #111; color: #ccc; }
         <div class="red-line"></div>
         <div class="page-title">Customer <span>Group</span></div>
       </div>
-      <div style="display:flex;align-items:center;gap:12px;">
+      <div style="display:flex;align-items:center;gap:16px;">
         <div class="page-date" id="cg-date"></div>
-        <div style="display:flex;gap:6px;">
-          <button class="filter-btn active" onclick="filterCG(10, this)">TOP 10</button>
-          <button class="filter-btn" onclick="filterCG(20, this)">TOP 20</button>
-          <button class="filter-btn" onclick="filterCG(50, this)">TOP 50</button>
-          <button class="filter-btn" onclick="filterCG(100, this)">TOP 100</button>
+        <div class="filter-bar">
+          <button class="filter-btn active" onclick="filterCG(10, this)">Top 10</button>
+          <button class="filter-btn" onclick="filterCG(20, this)">Top 20</button>
+          <button class="filter-btn" onclick="filterCG(50, this)">Top 50</button>
+          <button class="filter-btn" onclick="filterCG(100, this)">Top 100</button>
         </div>
       </div>
     </div>
@@ -280,25 +159,40 @@ const PROXIES  = [
   u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
   u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
   u => `https://thingproxy.freeboard.io/fetch/${u}`,
-  u => `https://yacdn.org/proxy/${u}`,
 ];
 
-let charts = {};
-let cgData = [];
-let cgLimit = 10;
-
-function filterCG(limit, btn) {
-  cgLimit = limit;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderCustomerGroupCharts(cgData, cgLimit);
+// Dynamic gradient: rank 1 = darkest red, descending to light grey
+// Always sorted by value so highest = darkest regardless of filter
+function getGradientColors(count) {
+  // Brand palette: dark red → mid red → light red → dark grey → mid grey → light grey
+  const stops = [
+    [204,   0,   0], // #cc0000 - primary brand red
+    [180,  20,  20], // deep red
+    [210,  60,  60], // mid red
+    [230, 100, 100], // soft red
+    [ 80,  80,  80], // dark grey
+    [120, 120, 120], // mid grey
+    [160, 160, 160], // light grey
+    [200, 200, 200], // pale grey
+    [220, 220, 220], // very light grey
+    [240, 240, 240], // near white
+  ];
+  const colors = [];
+  for (let i = 0; i < count; i++) {
+    const idx = Math.min(i, stops.length - 1);
+    const [r, g, b] = stops[idx];
+    colors.push(`rgb(${r},${g},${b})`);
+  }
+  return colors;
 }
-const CHART_COLORS = ['#cc0000','#e8e8e8','#888888','#ff6644','#aaaaaa','#ff9977','#cccccc','#ff4422','#999999','#ffbbaa'];
 const GRID_COLOR = 'rgba(255,255,255,0.04)';
 const TICK_COLOR = '#444';
-
 Chart.defaults.color = TICK_COLOR;
 Chart.defaults.borderColor = GRID_COLOR;
+
+let charts = {};
+let cgAllData = [];
+let cgLimit = 10;
 
 window.onload = () => loadData();
 
@@ -307,6 +201,13 @@ function showPage(id, btn) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
   btn.classList.add('active');
+}
+
+function filterCG(limit, btn) {
+  cgLimit = limit;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCGCharts(cgAllData.slice(0, cgLimit));
 }
 
 function fmt(n) {
@@ -328,91 +229,88 @@ function setStatus(msg, type, spin) {
 function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
 
 async function fetchCSV(url) {
-  // Method 1: Direct fetch via browser
+  // Try direct first
   try {
     const res = await fetch(url);
     const text = await res.text();
     const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
-    if (parsed.data && parsed.data.length > 0 && Object.keys(parsed.data[0]).length > 1) {
-      console.log('✅ Direct fetch worked:', parsed.data.length, 'rows');
-      return parsed.data;
-    }
-  } catch(e) { console.warn('Direct fetch failed:', e.message); }
+    if (parsed.data && parsed.data.length > 0 && Object.keys(parsed.data[0]).length > 1) return parsed.data;
+  } catch(e) {}
 
-  // Method 2: Try each proxy
+  // Try proxies
   for (let i = 0; i < PROXIES.length; i++) {
     try {
-      const proxyUrl = PROXIES[i](url);
-      const res = await fetch(proxyUrl);
+      const res = await fetch(PROXIES[i](url));
       const text = await res.text();
       const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
-      if (parsed.data && parsed.data.length > 0 && Object.keys(parsed.data[0]).length > 1) {
-        console.log(`✅ Proxy ${i+1} worked:`, parsed.data.length, 'rows');
-        return parsed.data;
-      }
-    } catch(e) { console.warn(`Proxy ${i+1} failed:`, e.message); }
+      if (parsed.data && parsed.data.length > 0 && Object.keys(parsed.data[0]).length > 1) return parsed.data;
+    } catch(e) {}
   }
-
-  // Method 3: PapaParse download as last resort
-  for (let i = 0; i < PROXIES.length; i++) {
-    try {
-      return await new Promise((res, rej) => {
-        Papa.parse(PROXIES[i](url), {
-          download: true, header: true, skipEmptyLines: true,
-          complete: r => (r.data && r.data.length > 0 && Object.keys(r.data[0]).length > 1) ? res(r.data) : rej('empty'),
-          error: () => rej('error')
-        });
-      });
-    } catch(e) { console.warn(`PapaParse proxy ${i+1} failed`); }
-  }
-
   throw new Error('All fetch methods failed');
 }
 
 async function loadData() {
-  setStatus('Initializing data feed...', 'loading', true);
+  setStatus('Loading contract data...', 'loading', true);
+  let mainData, refData;
+
   try {
-    const [mainData, refData] = await Promise.all([fetchCSV(CSV_MAIN), fetchCSV(CSV_REF)]);
-
-    const refMap = {};
-    refData.forEach(row => {
-      const contno = (row['CONTNO'] || '').trim();
-      if (contno && !refMap[contno]) {
-        refMap[contno] = {
-          seniorRM: (row['Senior RM'] || '').trim(),
-          customerGroup: (row['Customer Group'] || '').trim(),
-          customerGroupCode: (row['Customer Group Code'] || '').trim()
-        };
-      }
-    });
-
-    const joined = mainData.map(row => {
-      const contno = (row['CONTNO'] || '').trim();
-      const ref = refMap[contno] || { seniorRM: 'Unknown', customerGroup: 'Unknown', customerGroupCode: '-' };
-      return { ...row, ...ref };
-    });
-
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }).toUpperCase();
-    const timeStr = now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
-
-    setStatus(`Data synchronized — ${joined.length.toLocaleString()} contracts loaded`, 'success');
-    document.getElementById('lastUpdated').textContent = dateStr + ' · ' + timeStr;
-    document.getElementById('overview-date').textContent = dateStr;
-    document.getElementById('cg-date').textContent = dateStr;
-
-    renderOverview(joined);
-    renderCustomerGroup(joined);
+    mainData = await fetchCSV(CSV_MAIN);
   } catch(e) {
-    setStatus('Data feed unavailable. Please check connection and retry.', 'error');
+    setStatus('❌ Could not load contract data. Please retry.', 'error');
+    return;
   }
+
+  // Wait 1.5s before 2nd request to avoid proxy rate limit
+  await new Promise(r => setTimeout(r, 1500));
+  setStatus('Loading customer group data...', 'loading', true);
+
+  try {
+    refData = await fetchCSV(CSV_REF);
+  } catch(e) {
+    refData = [];
+  }
+
+  // Build ref lookup by CONTNO (distinct)
+  const refMap = {};
+  refData.forEach(row => {
+    const contno = (row['CONTNO'] || '').trim();
+    if (contno && !refMap[contno]) {
+      refMap[contno] = {
+        customerGroup: (row['Customer Group'] || 'Unknown').trim(),
+        customerGroupCode: (row['Customer Group Code'] || '-').trim(),
+        seniorRM: (row['Senior RM'] || '').trim()
+      };
+    }
+  });
+
+  // Join
+  const joined = mainData.map(row => {
+    const contno = (row['CONTNO'] || '').trim();
+    const ref = refMap[contno] || { customerGroup: 'Unknown', customerGroupCode: '-', seniorRM: '' };
+    return { ...row, ...ref };
+  });
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }).toUpperCase();
+  const timeStr = now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+
+  setStatus(`Data synchronized — ${joined.length.toLocaleString()} contracts loaded`, 'success');
+  document.getElementById('lastUpdated').textContent = dateStr + ' · ' + timeStr;
+  document.getElementById('overview-date').textContent = dateStr;
+  document.getElementById('cg-date').textContent = dateStr;
+
+  renderOverview(joined);
+  renderCustomerGroup(joined);
 }
 
 function makeBarChart(id, labels, values, colors) {
   destroyChart(id);
+  // Sort by value descending so highest always gets darkest color
+  const sorted = labels.map((l,i) => ({ l, v: values[i] })).sort((a,b) => b.v - a.v);
+  const sortedColors = getGradientColors(sorted.length);
   charts[id] = new Chart(document.getElementById(id), {
     type: 'bar',
-    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderRadius: 0, borderWidth: 0 }] },
+    data: { labels: sorted.map(s => s.l), datasets: [{ data: sorted.map(s => s.v), backgroundColor: sortedColors, borderRadius: 0, borderWidth: 0 }] },
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
@@ -426,12 +324,14 @@ function makeBarChart(id, labels, values, colors) {
 
 function makeDoughnutChart(id, labels, values, colors) {
   destroyChart(id);
+  // Sort by value descending so highest always gets darkest color
+  const sorted = labels.map((l,i) => ({ l, v: values[i] })).sort((a,b) => b.v - a.v);
+  const sortedColors = getGradientColors(sorted.length);
   charts[id] = new Chart(document.getElementById(id), {
     type: 'doughnut',
-    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 1, borderColor: '#0a0a0a' }] },
+    data: { labels: sorted.map(s => s.l), datasets: [{ data: sorted.map(s => s.v), backgroundColor: sortedColors, borderWidth: 1, borderColor: '#0a0a0a' }] },
     options: {
-      responsive: true, maintainAspectRatio: false,
-      cutout: '65%',
+      responsive: true, maintainAspectRatio: false, cutout: '65%',
       plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, color: '#555', padding: 12, boxWidth: 10 } } }
     }
   });
@@ -451,8 +351,7 @@ function renderOverview(data) {
 
   const totalOut = Object.values(gradeMap).reduce((a,b) => a+b.outsbal, 0);
   const grades = Object.keys(gradeMap).sort((a,b) => gradeMap[b].finamt - gradeMap[a].finamt);
-  const colors = grades.map((_,i) => CHART_COLORS[i % CHART_COLORS.length]);
-
+  const colors = getGradientColors(grades.length);
   document.getElementById('overview-cards').innerHTML = `
     <div class="card"><div class="card-label">Total Contracts</div><div class="card-value">${data.length.toLocaleString()}</div><div class="card-sub">All Grades</div></div>
     <div class="card"><div class="card-label">Total FINAMT</div><div class="card-value">${fmt(totalFin)}</div><div class="card-sub">Finance Amount</div></div>
@@ -487,34 +386,33 @@ function renderCustomerGroup(data) {
 
   const totalOut = Object.values(cgMap).reduce((a,b) => a+b.outsbal, 0);
 
-  // Store full sorted data globally
-  cgData = Object.entries(cgMap)
+  // Store all groups sorted by finamt
+  cgAllData = Object.entries(cgMap)
     .sort((a,b) => b[1].finamt - a[1].finamt)
-    .map(([name, d]) => ({ name, ...d }));
+    .map(([name, d]) => ({ name, ...d, totalFin }));
 
-  // Cards always show all groups
   document.getElementById('cg-cards').innerHTML = `
     <div class="card"><div class="card-label">Total Contracts</div><div class="card-value">${data.length.toLocaleString()}</div><div class="card-sub">All Groups</div></div>
     <div class="card"><div class="card-label">Total FINAMT</div><div class="card-value">${fmt(totalFin)}</div><div class="card-sub">Finance Amount</div></div>
     <div class="card"><div class="card-label">Outstanding</div><div class="card-value">${fmt(totalOut)}</div><div class="card-sub">OUTSBAL</div></div>
     <div class="card"><div class="card-label">Avg FINAMT</div><div class="card-value">${fmt(totalFin/data.length)}</div><div class="card-sub">Per Contract</div></div>
-    <div class="card"><div class="card-label">Groups</div><div class="card-value">${cgData.length}</div><div class="card-sub">Customer Groups</div></div>
+    <div class="card"><div class="card-label">Groups</div><div class="card-value">${cgAllData.length}</div><div class="card-sub">Customer Groups</div></div>
   `;
 
-  renderCustomerGroupCharts(cgData, cgLimit);
+  renderCGCharts(cgAllData.slice(0, cgLimit));
 }
 
-function renderCustomerGroupCharts(allGroups, limit) {
-  const groups = allGroups.slice(0, limit);
-  const totalFin = allGroups.reduce((a,b) => a + b.finamt, 0);
-  const colors = groups.map((_,i) => CHART_COLORS[i % CHART_COLORS.length]);
+function renderCGCharts(groups) {
+  const totalFin = cgAllData.reduce((a,b) => a + b.finamt, 0);
+  // Already sorted by finamt descending — assign gradient accordingly
+  const colors = getGradientColors(groups.length);
 
   makeBarChart('cgFinChart', groups.map(g => g.name), groups.map(g => Math.round(g.finamt)), colors);
   makeDoughnutChart('cgCountChart', groups.map(g => g.name), groups.map(g => g.count), colors);
 
   let html = `<tr><th>Rank</th><th>Customer Group</th><th>Code</th><th>Contracts</th><th>Total FINAMT</th><th>Avg FINAMT</th><th>Outstanding</th><th>Share</th></tr>`;
-  groups.forEach((g, i) => {
-    html += `<tr><td style="color:#555">#${i+1}</td><td>${g.name}</td><td style="color:#555">${g.code}</td><td>${g.count.toLocaleString()}</td><td>${fmtFull(g.finamt)}</td><td>${fmtFull(g.finamt/g.count)}</td><td>${fmtFull(g.outsbal)}</td><td style="color:${colors[i]}">${((g.finamt/totalFin)*100).toFixed(1)}%</td></tr>`;
+  groups.forEach((g,i) => {
+    html += `<tr><td style="color:${colors[i]}">#${i+1}</td><td>${g.name}</td><td style="color:#555">${g.code}</td><td>${g.count.toLocaleString()}</td><td>${fmtFull(g.finamt)}</td><td>${fmtFull(g.finamt/g.count)}</td><td>${fmtFull(g.outsbal)}</td><td style="color:${colors[i]}">${((g.finamt/totalFin)*100).toFixed(1)}%</td></tr>`;
   });
   document.getElementById('cgTable').innerHTML = html;
 }
