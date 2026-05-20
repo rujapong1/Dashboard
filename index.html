@@ -72,10 +72,7 @@ tr:hover td { background: #111; color: #fff; }
 .filter-btn { padding: 6px 14px; background: transparent; color: #777; border: 1px solid #2a2a2a; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
 .filter-btn:hover { border-color: #cc0000; color: #cc0000; }
 .filter-btn.active { border-color: #cc0000; color: #cc0000; background: #1a0000; }
-/* Briefing box */
-.briefing-box { background: #0d0d0d; border: 1px solid #1a1a1a; border-left: 3px solid #cc0000; padding: 24px; margin-bottom: 24px; display: none; }
-.briefing-title { font-size: 10px; letter-spacing: 3px; color: #777; text-transform: uppercase; margin-bottom: 12px; }
-.briefing-text { font-size: 13px; color: #ccc; line-height: 1.8; font-weight: 300; }
+
 </style>
 </head>
 <body>
@@ -113,10 +110,7 @@ tr:hover td { background: #111; color: #fff; }
       </div>
       <div class="page-date" id="overview-date"></div>
     </div>
-    <div class="briefing-box" id="briefing-box">
-      <div class="briefing-title">🎙 Executive Briefing</div>
-      <div class="briefing-text" id="briefing-text"></div>
-    </div>
+
     <div class="cards" id="overview-cards"></div>
     <div class="charts">
       <div class="chart-box">
@@ -266,31 +260,46 @@ function generateBriefing(data, gradeMap, grades, totalFin, totalOut) {
   const contracts = data.length;
   const now = new Date();
   const dateStr = now.toLocaleDateString('th-TH', { day:'numeric', month:'long', year:'numeric' });
+  const hour = now.getHours();
+  const greeting = hour < 12 ? 'อรุณสวัสดิ์ครับ' : hour < 17 ? 'สวัสดีตอนบ่ายครับ' : 'สวัสดีตอนเย็นครับ';
 
-  let script = `สวัสดีครับ นี่คือรายงานสรุปพอร์ตโฟลิโอ Alpha X ประจำวันที่ ${dateStr} `;
-  script += `พอร์ตโฟลิโอรวมของเรามีสัญญาทั้งสิ้น ${contracts.toLocaleString('th-TH')} สัญญา `;
-  script += `มูลค่าสินเชื่อรวม ${fmtSpeak(totalFin)} `;
-  script += `และยอดคงค้างรวม ${fmtSpeak(totalOut)} `;
-  script += `กลุ่มลูกค้า ${top} นำพอร์ตโฟลิโอด้วยสัดส่วน ${topPct} เปอร์เซ็นต์ของมูลค่าสินเชื่อรวม `;
-  script += `มีจำนวน ${topD.count.toLocaleString('th-TH')} สัญญา และมีขนาดดีลเฉลี่ย ${fmtSpeak(topD.finamt / topD.count)} `;
+  let s = '';
+
+  s += `${greeting} `;
+  s += `วันนี้วันที่ ${dateStr} `;
+  s += `ผมขอสรุปภาพรวมพอร์ตโฟลิโอของ Alpha X ให้ฟังนะครับ `;
+
+  s += `ณ วันนี้ เรามีสัญญาที่ดูแลอยู่ทั้งหมด ${contracts.toLocaleString('th-TH')} สัญญา `;
+  s += `คิดเป็นมูลค่าสินเชื่อรวมกันประมาณ ${fmtSpeak(totalFin)} `;
+  s += `ส่วนยอดคงค้างตอนนี้อยู่ที่ ${fmtSpeak(totalOut)} ครับ `;
+
+  s += `ถ้าดูตามกลุ่มลูกค้า กลุ่ม ${top} ยังคงเป็นกลุ่มหลักของเรา `;
+  s += `คิดเป็นสัดส่วนถึง ${topPct} เปอร์เซ็นต์ของพอร์ตโฟลิโอทั้งหมด `;
+  s += `มีสัญญาอยู่ ${topD.count.toLocaleString('th-TH')} สัญญา `;
+  s += `และมูลค่าเฉลี่ยต่อสัญญาอยู่ที่ ${fmtSpeak(topD.finamt / topD.count)} `;
 
   if (vipD) {
     const vipAvg = vipD.finamt / vipD.count;
     const overallAvg = totalFin / contracts;
     const vipPremium = ((vipAvg / overallAvg - 1) * 100).toFixed(0);
-    script += `กลุ่ม VIP แม้จะมีสัดส่วนเพียง ${((vipD.count / contracts) * 100).toFixed(1)} เปอร์เซ็นต์ของจำนวนสัญญาทั้งหมด `;
-    script += `แต่มีขนาดดีลเฉลี่ยสูงกว่าค่าเฉลี่ยพอร์ตโฟลิโอถึง ${vipPremium} เปอร์เซ็นต์ `;
-    script += `ทำให้เป็นกลุ่มที่มีมูลค่าสูงสุดต่อลูกค้าหนึ่งราย `;
+    s += `สำหรับกลุ่ม VIP นั้น `;
+    s += `แม้จะมีจำนวนสัญญาไม่มากนัก คือประมาณ ${((vipD.count / contracts) * 100).toFixed(1)} เปอร์เซ็นต์เท่านั้น `;
+    s += `แต่มูลค่าเฉลี่ยต่อสัญญาสูงกว่าค่าเฉลี่ยพอร์ตโฟลิโอถึง ${vipPremium} เปอร์เซ็นต์เลยครับ `;
+    s += `ถือว่าเป็นกลุ่มที่สร้างมูลค่าสูงสุดต่อลูกค้าหนึ่งราย และควรให้ความสำคัญเป็นพิเศษ `;
   }
 
   const smallest = grades[grades.length - 1];
   const smallD = gradeMap[smallest];
-  script += `กลุ่ม ${smallest} มีสัดส่วนน้อยที่สุดที่ ${((smallD.finamt / totalFin) * 100).toFixed(1)} เปอร์เซ็นต์ `;
-  script += `ซึ่งถือเป็นโอกาสในการเติบโตที่น่าสนใจ `;
-  script += `ทิศทางเชิงกลยุทธ์ควรมุ่งเน้นการรักษาลูกค้า VIP และการอัพเกรดลูกค้ากลุ่ม Prime `;
-  script += `เพื่อเพิ่มผลตอบแทนของพอร์ตโฟลิโอ นั่นคือสรุปรายงานประจำวันของเราครับ`;
+  s += `ในขณะที่กลุ่ม ${smallest} มีสัดส่วนอยู่ที่ ${((smallD.finamt / totalFin) * 100).toFixed(1)} เปอร์เซ็นต์ `;
+  s += `ซึ่งยังมีโอกาสขยายตัวได้อีกมากครับ `;
 
-  return script;
+  s += `โดยรวมแล้ว สิ่งที่ควรโฟกัสในช่วงนี้มีสองเรื่องหลักครับ `;
+  s += `หนึ่งคือรักษาฐานลูกค้า VIP ให้แน่น `;
+  s += `และสองคือหาโอกาสอัพเกรดลูกค้ากลุ่ม Prime ขึ้นมา `;
+  s += `เพื่อให้พอร์ตโฟลิโอโดยรวมแข็งแกร่งขึ้น `;
+  s += `เท่านี้ก็ครบสรุปของวันนี้แล้วครับ ขอบคุณครับ`;
+
+  return s;
 }
 
 function fmtSpeak(n) {
@@ -418,11 +427,8 @@ function renderOverview(data) {
   const grades = Object.keys(gradeMap).sort((a,b) => gradeMap[b].finamt - gradeMap[a].finamt);
   const colors = getGradientColors(grades.length);
 
-  // Generate briefing
+  // Generate briefing (audio only — no text displayed)
   briefingScript = generateBriefing(data, gradeMap, grades, totalFin, totalOut);
-  const briefBox = document.getElementById('briefing-box');
-  document.getElementById('briefing-text').textContent = briefingScript;
-  briefBox.style.display = 'block';
 
   document.getElementById('overview-cards').innerHTML = `
     <div class="card"><div class="card-label">Total Contracts</div><div class="card-value">${data.length.toLocaleString()}</div><div class="card-sub">All Grades</div></div>
