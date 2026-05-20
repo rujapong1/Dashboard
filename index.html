@@ -9,20 +9,26 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-body { background: #0a0a0a; color: #e8e8e8; min-height: 100vh; }
+body { background: #0a0a0a; color: #f0f0f0; min-height: 100vh; }
 .topbar { background: #0a0a0a; border-bottom: 1px solid #1e1e1e; padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; }
 .logo { display: flex; align-items: center; gap: 16px; }
 .logo-text { font-size: 22px; font-weight: 300; letter-spacing: 8px; color: white; text-transform: uppercase; }
 .logo-text span { color: #cc0000; font-weight: 400; }
 .logo-divider { width: 1px; height: 28px; background: #333; }
-.logo-subtitle { font-size: 11px; letter-spacing: 3px; color: #555; text-transform: uppercase; }
-.topbar-right { display: flex; align-items: center; gap: 16px; }
-.last-updated { font-size: 11px; color: #444; letter-spacing: 1px; }
-.refresh-btn { padding: 7px 18px; background: transparent; color: #888; border: 1px solid #2a2a2a; border-radius: 4px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+.logo-subtitle { font-size: 11px; letter-spacing: 3px; color: #777; text-transform: uppercase; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.last-updated { font-size: 11px; color: #666; letter-spacing: 1px; }
+.refresh-btn { padding: 7px 18px; background: transparent; color: #aaa; border: 1px solid #2a2a2a; border-radius: 4px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
 .refresh-btn:hover { border-color: #cc0000; color: #cc0000; }
+.speak-btn { padding: 7px 18px; background: transparent; color: #aaa; border: 1px solid #2a2a2a; border-radius: 4px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 6px; }
+.speak-btn:hover { border-color: #cc0000; color: #cc0000; }
+.speak-btn.speaking { border-color: #cc0000; color: #cc0000; background: #1a0000; }
+.speak-btn .dot { width: 6px; height: 6px; background: #cc0000; border-radius: 50%; animation: pulse 1s infinite; display: none; }
+.speak-btn.speaking .dot { display: inline-block; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 .nav { background: #0d0d0d; border-bottom: 1px solid #1a1a1a; padding: 0 32px; display: flex; }
-.nav-btn { padding: 14px 24px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #444; border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; font-family: 'Inter', sans-serif; }
-.nav-btn:hover { color: #aaa; }
+.nav-btn { padding: 14px 24px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #666; border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+.nav-btn:hover { color: #ccc; }
 .nav-btn.active { color: white; border-bottom: 2px solid #cc0000; }
 .content { padding: 32px; }
 .page { display: none; }
@@ -30,11 +36,11 @@ body { background: #0a0a0a; color: #e8e8e8; min-height: 100vh; }
 .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 28px; padding-bottom: 16px; border-bottom: 1px solid #1a1a1a; }
 .page-title { font-size: 20px; font-weight: 300; letter-spacing: 2px; color: white; text-transform: uppercase; }
 .page-title span { color: #cc0000; }
-.page-date { font-size: 11px; color: #444; letter-spacing: 1px; }
+.page-date { font-size: 11px; color: #666; letter-spacing: 1px; }
 .status { padding: 12px 16px; border-radius: 4px; font-size: 12px; letter-spacing: 1px; margin-bottom: 24px; border-left: 3px solid transparent; }
 .loading { background: #0f0f0f; border-left-color: #cc0000; color: #888; }
-.error { background: #1a0000; border-left-color: #cc0000; color: #ff4444; }
-.success { background: #0a0a0a; border-left-color: #2a7a4b; color: #444; }
+.error { background: #1a0000; border-left-color: #cc0000; color: #ff6666; }
+.success { background: #0a0a0a; border-left-color: #2a7a4b; color: #666; }
 .spinner { display: inline-block; width: 10px; height: 10px; border: 1px solid #cc0000; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1px; margin-bottom: 24px; background: #1a1a1a; border: 1px solid #1a1a1a; }
@@ -42,30 +48,34 @@ body { background: #0a0a0a; color: #e8e8e8; min-height: 100vh; }
 .card:hover { background: #111; }
 .card::before { content: ''; position: absolute; top: 0; left: 0; width: 2px; height: 0; background: #cc0000; transition: height 0.3s; }
 .card:hover::before { height: 100%; }
-.card-label { font-size: 10px; letter-spacing: 3px; color: #444; text-transform: uppercase; margin-bottom: 12px; }
-.card-value { font-size: 22px; font-weight: 300; color: white; }
-.card-sub { font-size: 10px; color: #333; margin-top: 6px; letter-spacing: 1px; text-transform: uppercase; }
+.card-label { font-size: 10px; letter-spacing: 3px; color: #666; text-transform: uppercase; margin-bottom: 12px; }
+.card-value { font-size: 22px; font-weight: 300; color: #ffffff; }
+.card-sub { font-size: 10px; color: #444; margin-top: 6px; letter-spacing: 1px; text-transform: uppercase; }
 .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 24px; }
 .chart-box { background: #0d0d0d; border: 1px solid #1a1a1a; padding: 24px; }
-.chart-title { font-size: 10px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 20px; }
+.chart-title { font-size: 10px; letter-spacing: 3px; color: #777; text-transform: uppercase; margin-bottom: 20px; }
 .table-box { background: #0d0d0d; border: 1px solid #1a1a1a; padding: 24px; overflow-x: auto; }
-.table-title { font-size: 10px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 20px; }
+.table-title { font-size: 10px; letter-spacing: 3px; color: #777; text-transform: uppercase; margin-bottom: 20px; }
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
-th { text-align: left; padding: 10px 14px; color: #444; font-weight: 400; letter-spacing: 2px; font-size: 10px; text-transform: uppercase; border-bottom: 1px solid #1a1a1a; }
-td { padding: 12px 14px; border-bottom: 1px solid #111; color: #aaa; }
+th { text-align: left; padding: 10px 14px; color: #888; font-weight: 400; letter-spacing: 2px; font-size: 10px; text-transform: uppercase; border-bottom: 1px solid #1a1a1a; }
+td { padding: 12px 14px; border-bottom: 1px solid #111; color: #ccc; }
 tr:last-child td { border-bottom: none; }
-tr:hover td { background: #111; color: #ccc; }
+tr:hover td { background: #111; color: #fff; }
 .badge { display: inline-block; padding: 3px 10px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; border: 1px solid; }
-.badge-Preferred { border-color: #1a3a6e; color: #4d7fc4; background: #0a1628; }
-.badge-VIP { border-color: #6e4a00; color: #c49a00; background: #1a1200; }
-.badge-Prime { border-color: #0d3d22; color: #2a9a5b; background: #061a0f; }
-.badge-PrimeA { border-color: #3d1a4e; color: #9a4dcc; background: #1a0a28; }
-.badge-Unknown { border-color: #2a2a2a; color: #555; background: #111; }
+.badge-Preferred { border-color: #1a3a6e; color: #7aabf0; background: #0a1628; }
+.badge-VIP { border-color: #6e4a00; color: #f0c040; background: #1a1200; }
+.badge-Prime { border-color: #0d3d22; color: #50c080; background: #061a0f; }
+.badge-PrimeA { border-color: #3d1a4e; color: #c070f0; background: #1a0a28; }
+.badge-Unknown { border-color: #2a2a2a; color: #777; background: #111; }
 .red-line { width: 40px; height: 2px; background: #cc0000; margin-bottom: 8px; }
 .filter-bar { display: flex; gap: 6px; }
-.filter-btn { padding: 6px 14px; background: transparent; color: #555; border: 1px solid #2a2a2a; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+.filter-btn { padding: 6px 14px; background: transparent; color: #777; border: 1px solid #2a2a2a; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; font-family: 'Inter', sans-serif; }
 .filter-btn:hover { border-color: #cc0000; color: #cc0000; }
 .filter-btn.active { border-color: #cc0000; color: #cc0000; background: #1a0000; }
+/* Briefing box */
+.briefing-box { background: #0d0d0d; border: 1px solid #1a1a1a; border-left: 3px solid #cc0000; padding: 24px; margin-bottom: 24px; display: none; }
+.briefing-title { font-size: 10px; letter-spacing: 3px; color: #777; text-transform: uppercase; margin-bottom: 12px; }
+.briefing-text { font-size: 13px; color: #ccc; line-height: 1.8; font-weight: 300; }
 </style>
 </head>
 <body>
@@ -78,6 +88,10 @@ tr:hover td { background: #111; color: #ccc; }
   </div>
   <div class="topbar-right">
     <div class="last-updated" id="lastUpdated">—</div>
+    <button class="speak-btn" id="speakBtn" onclick="toggleSpeak()">
+      <span class="dot"></span>
+      🔊 Briefing
+    </button>
     <button class="refresh-btn" onclick="loadData()">↻ Refresh</button>
   </div>
 </div>
@@ -98,6 +112,10 @@ tr:hover td { background: #111; color: #ccc; }
         <div class="page-title">Portfolio <span>Overview</span></div>
       </div>
       <div class="page-date" id="overview-date"></div>
+    </div>
+    <div class="briefing-box" id="briefing-box">
+      <div class="briefing-title">🎙 Executive Briefing</div>
+      <div class="briefing-text" id="briefing-text"></div>
     </div>
     <div class="cards" id="overview-cards"></div>
     <div class="charts">
@@ -161,55 +179,127 @@ const PROXIES  = [
   u => `https://thingproxy.freeboard.io/fetch/${u}`,
 ];
 
-// Dynamic gradient: rank 1 = darkest red, descending to light grey
-// Always sorted by value so highest = darkest regardless of filter
-function getGradientColors(count) {
-  // Brand palette: dark red → mid red → light red → dark grey → mid grey → light grey
-  const stops = [
-    [204,   0,   0], // #cc0000 - primary brand red
-    [180,  20,  20], // deep red
-    [210,  60,  60], // mid red
-    [230, 100, 100], // soft red
-    [ 80,  80,  80], // dark grey
-    [120, 120, 120], // mid grey
-    [160, 160, 160], // light grey
-    [200, 200, 200], // pale grey
-    [220, 220, 220], // very light grey
-    [240, 240, 240], // near white
-  ];
-  const colors = [];
-  for (let i = 0; i < count; i++) {
-    const idx = Math.min(i, stops.length - 1);
-    const [r, g, b] = stops[idx];
-    colors.push(`rgb(${r},${g},${b})`);
-  }
-  return colors;
-}
-const GRID_COLOR = 'rgba(255,255,255,0.04)';
-const TICK_COLOR = '#444';
+const GRID_COLOR = 'rgba(255,255,255,0.05)';
+const TICK_COLOR = '#666';
 Chart.defaults.color = TICK_COLOR;
 Chart.defaults.borderColor = GRID_COLOR;
 
 let charts = {};
 let cgAllData = [];
 let cgLimit = 10;
+let briefingScript = '';
+let isSpeaking = false;
 
 window.onload = () => loadData();
 
+// ── Color gradient ──────────────────────────────────────────
+function getGradientColors(count) {
+  const stops = [
+    [204,  0,  0],[180, 20, 20],[210, 60, 60],[230,100,100],
+    [100,100,100],[130,130,130],[160,160,160],[190,190,190],[210,210,210],[230,230,230]
+  ];
+  return Array.from({length: count}, (_,i) => {
+    const [r,g,b] = stops[Math.min(i, stops.length-1)];
+    return `rgb(${r},${g},${b})`;
+  });
+}
+
+// ── Navigation ───────────────────────────────────────────────
 function showPage(id, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
   btn.classList.add('active');
+  stopSpeak();
 }
 
-function filterCG(limit, btn) {
-  cgLimit = limit;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderCGCharts(cgAllData.slice(0, cgLimit));
+// ── Text-to-Speech ───────────────────────────────────────────
+function toggleSpeak() {
+  if (isSpeaking) { stopSpeak(); return; }
+  if (!briefingScript) return;
+  startSpeak();
 }
 
+function startSpeak() {
+  window.speechSynthesis.cancel();
+  const utt = new SpeechSynthesisUtterance(briefingScript);
+  utt.lang = 'th-TH';
+  utt.rate = 0.88;
+  utt.pitch = 1.0;
+
+  // Pick Thai voice if available
+  const voices = window.speechSynthesis.getVoices();
+  const preferred = voices.find(v => v.lang === 'th-TH' || v.name.includes('Thai'));
+  if (preferred) utt.voice = preferred;
+
+  utt.onend = () => { isSpeaking = false; updateSpeakBtn(); };
+  utt.onerror = () => { isSpeaking = false; updateSpeakBtn(); };
+
+  window.speechSynthesis.speak(utt);
+  isSpeaking = true;
+  updateSpeakBtn();
+}
+
+function stopSpeak() {
+  window.speechSynthesis.cancel();
+  isSpeaking = false;
+  updateSpeakBtn();
+}
+
+function updateSpeakBtn() {
+  const btn = document.getElementById('speakBtn');
+  if (isSpeaking) {
+    btn.classList.add('speaking');
+    btn.innerHTML = '<span class="dot"></span> ⏹ Stop';
+  } else {
+    btn.classList.remove('speaking');
+    btn.innerHTML = '🔊 Briefing';
+  }
+}
+
+// ── Generate executive briefing script ──────────────────────
+function generateBriefing(data, gradeMap, grades, totalFin, totalOut) {
+  const top = grades[0];
+  const topD = gradeMap[top];
+  const topPct = ((topD.finamt / totalFin) * 100).toFixed(1);
+  const vipD = gradeMap['VIP'];
+  const contracts = data.length;
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('th-TH', { day:'numeric', month:'long', year:'numeric' });
+
+  let script = `สวัสดีครับ นี่คือรายงานสรุปพอร์ตโฟลิโอ Alpha X ประจำวันที่ ${dateStr} `;
+  script += `พอร์ตโฟลิโอรวมของเรามีสัญญาทั้งสิ้น ${contracts.toLocaleString('th-TH')} สัญญา `;
+  script += `มูลค่าสินเชื่อรวม ${fmtSpeak(totalFin)} `;
+  script += `และยอดคงค้างรวม ${fmtSpeak(totalOut)} `;
+  script += `กลุ่มลูกค้า ${top} นำพอร์ตโฟลิโอด้วยสัดส่วน ${topPct} เปอร์เซ็นต์ของมูลค่าสินเชื่อรวม `;
+  script += `มีจำนวน ${topD.count.toLocaleString('th-TH')} สัญญา และมีขนาดดีลเฉลี่ย ${fmtSpeak(topD.finamt / topD.count)} `;
+
+  if (vipD) {
+    const vipAvg = vipD.finamt / vipD.count;
+    const overallAvg = totalFin / contracts;
+    const vipPremium = ((vipAvg / overallAvg - 1) * 100).toFixed(0);
+    script += `กลุ่ม VIP แม้จะมีสัดส่วนเพียง ${((vipD.count / contracts) * 100).toFixed(1)} เปอร์เซ็นต์ของจำนวนสัญญาทั้งหมด `;
+    script += `แต่มีขนาดดีลเฉลี่ยสูงกว่าค่าเฉลี่ยพอร์ตโฟลิโอถึง ${vipPremium} เปอร์เซ็นต์ `;
+    script += `ทำให้เป็นกลุ่มที่มีมูลค่าสูงสุดต่อลูกค้าหนึ่งราย `;
+  }
+
+  const smallest = grades[grades.length - 1];
+  const smallD = gradeMap[smallest];
+  script += `กลุ่ม ${smallest} มีสัดส่วนน้อยที่สุดที่ ${((smallD.finamt / totalFin) * 100).toFixed(1)} เปอร์เซ็นต์ `;
+  script += `ซึ่งถือเป็นโอกาสในการเติบโตที่น่าสนใจ `;
+  script += `ทิศทางเชิงกลยุทธ์ควรมุ่งเน้นการรักษาลูกค้า VIP และการอัพเกรดลูกค้ากลุ่ม Prime `;
+  script += `เพื่อเพิ่มผลตอบแทนของพอร์ตโฟลิโอ นั่นคือสรุปรายงานประจำวันของเราครับ`;
+
+  return script;
+}
+
+function fmtSpeak(n) {
+  if (n >= 1e9) return (n/1e9).toFixed(2) + ' พันล้านบาท';
+  if (n >= 1e6) return Math.round(n/1e6) + ' ล้านบาท';
+  return Math.round(n).toLocaleString('th-TH') + ' บาท';
+}
+
+// ── Helpers ──────────────────────────────────────────────────
 function fmt(n) {
   if (isNaN(n) || n === 0) return '฿0';
   if (n >= 1e9) return '฿' + (n/1e9).toFixed(2) + 'B';
@@ -228,72 +318,56 @@ function setStatus(msg, type, spin) {
 }
 function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
 
+// ── Fetch ─────────────────────────────────────────────────────
 async function fetchCSV(url) {
-  // Try direct first
   try {
     const res = await fetch(url);
     const text = await res.text();
-    const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
-    if (parsed.data && parsed.data.length > 0 && Object.keys(parsed.data[0]).length > 1) return parsed.data;
+    const p = Papa.parse(text, { header:true, skipEmptyLines:true });
+    if (p.data && p.data.length > 0 && Object.keys(p.data[0]).length > 1) return p.data;
   } catch(e) {}
-
-  // Try proxies
   for (let i = 0; i < PROXIES.length; i++) {
     try {
       const res = await fetch(PROXIES[i](url));
       const text = await res.text();
-      const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
-      if (parsed.data && parsed.data.length > 0 && Object.keys(parsed.data[0]).length > 1) return parsed.data;
+      const p = Papa.parse(text, { header:true, skipEmptyLines:true });
+      if (p.data && p.data.length > 0 && Object.keys(p.data[0]).length > 1) return p.data;
     } catch(e) {}
   }
   throw new Error('All fetch methods failed');
 }
 
+// ── Load ──────────────────────────────────────────────────────
 async function loadData() {
+  stopSpeak();
   setStatus('Loading contract data...', 'loading', true);
   let mainData, refData;
 
-  try {
-    mainData = await fetchCSV(CSV_MAIN);
-  } catch(e) {
-    setStatus('❌ Could not load contract data. Please retry.', 'error');
-    return;
-  }
+  try { mainData = await fetchCSV(CSV_MAIN); }
+  catch(e) { setStatus('❌ Could not load contract data. Please retry.', 'error'); return; }
 
-  // Wait 1.5s before 2nd request to avoid proxy rate limit
   await new Promise(r => setTimeout(r, 1500));
   setStatus('Loading customer group data...', 'loading', true);
+  try { refData = await fetchCSV(CSV_REF); } catch(e) { refData = []; }
 
-  try {
-    refData = await fetchCSV(CSV_REF);
-  } catch(e) {
-    refData = [];
-  }
-
-  // Build ref lookup by CONTNO (distinct)
   const refMap = {};
   refData.forEach(row => {
     const contno = (row['CONTNO'] || '').trim();
-    if (contno && !refMap[contno]) {
-      refMap[contno] = {
-        customerGroup: (row['Customer Group'] || 'Unknown').trim(),
-        customerGroupCode: (row['Customer Group Code'] || '-').trim(),
-        seniorRM: (row['Senior RM'] || '').trim()
-      };
-    }
+    if (contno && !refMap[contno]) refMap[contno] = {
+      customerGroup: (row['Customer Group'] || 'Unknown').trim(),
+      customerGroupCode: (row['Customer Group Code'] || '-').trim(),
+      seniorRM: (row['Senior RM'] || '').trim()
+    };
   });
 
-  // Join
   const joined = mainData.map(row => {
     const contno = (row['CONTNO'] || '').trim();
-    const ref = refMap[contno] || { customerGroup: 'Unknown', customerGroupCode: '-', seniorRM: '' };
-    return { ...row, ...ref };
+    return { ...row, ...(refMap[contno] || { customerGroup:'Unknown', customerGroupCode:'-', seniorRM:'' }) };
   });
 
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }).toUpperCase();
   const timeStr = now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
-
   setStatus(`Data synchronized — ${joined.length.toLocaleString()} contracts loaded`, 'success');
   document.getElementById('lastUpdated').textContent = dateStr + ' · ' + timeStr;
   document.getElementById('overview-date').textContent = dateStr;
@@ -303,40 +377,32 @@ async function loadData() {
   renderCustomerGroup(joined);
 }
 
-function makeBarChart(id, labels, values, colors) {
+// ── Charts ────────────────────────────────────────────────────
+function makeBarChart(id, labels, values) {
   destroyChart(id);
-  // Sort by value descending so highest always gets darkest color
-  const sorted = labels.map((l,i) => ({ l, v: values[i] })).sort((a,b) => b.v - a.v);
-  const sortedColors = getGradientColors(sorted.length);
+  const sorted = labels.map((l,i) => ({l, v:values[i]})).sort((a,b) => b.v - a.v);
+  const colors = getGradientColors(sorted.length);
   charts[id] = new Chart(document.getElementById(id), {
     type: 'bar',
-    data: { labels: sorted.map(s => s.l), datasets: [{ data: sorted.map(s => s.v), backgroundColor: sortedColors, borderRadius: 0, borderWidth: 0 }] },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { color: GRID_COLOR }, ticks: { color: TICK_COLOR, font: { size: 10 } } },
-        y: { grid: { color: GRID_COLOR }, ticks: { color: TICK_COLOR, font: { size: 10 }, callback: v => fmt(v) } }
-      }
-    }
+    data: { labels: sorted.map(s=>s.l), datasets: [{ data: sorted.map(s=>s.v), backgroundColor: colors, borderRadius: 0, borderWidth: 0 }] },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+      scales:{ x:{grid:{color:GRID_COLOR}, ticks:{color:TICK_COLOR, font:{size:10}}}, y:{grid:{color:GRID_COLOR}, ticks:{color:TICK_COLOR, font:{size:10}, callback:v=>fmt(v)}} } }
   });
 }
 
-function makeDoughnutChart(id, labels, values, colors) {
+function makeDoughnutChart(id, labels, values) {
   destroyChart(id);
-  // Sort by value descending so highest always gets darkest color
-  const sorted = labels.map((l,i) => ({ l, v: values[i] })).sort((a,b) => b.v - a.v);
-  const sortedColors = getGradientColors(sorted.length);
+  const sorted = labels.map((l,i) => ({l, v:values[i]})).sort((a,b) => b.v - a.v);
+  const colors = getGradientColors(sorted.length);
   charts[id] = new Chart(document.getElementById(id), {
     type: 'doughnut',
-    data: { labels: sorted.map(s => s.l), datasets: [{ data: sorted.map(s => s.v), backgroundColor: sortedColors, borderWidth: 1, borderColor: '#0a0a0a' }] },
-    options: {
-      responsive: true, maintainAspectRatio: false, cutout: '65%',
-      plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, color: '#555', padding: 12, boxWidth: 10 } } }
-    }
+    data: { labels: sorted.map(s=>s.l), datasets: [{ data: sorted.map(s=>s.v), backgroundColor: colors, borderWidth:1, borderColor:'#0a0a0a' }] },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'65%',
+      plugins:{ legend:{ position:'bottom', labels:{ font:{size:10}, color:'#888', padding:12, boxWidth:10 } } } }
   });
 }
 
+// ── Overview ──────────────────────────────────────────────────
 function renderOverview(data) {
   const gradeMap = {};
   let totalFin = 0;
@@ -348,10 +414,16 @@ function renderOverview(data) {
     gradeMap[grade].count++; gradeMap[grade].finamt += fin; gradeMap[grade].outsbal += out;
     totalFin += fin;
   });
-
   const totalOut = Object.values(gradeMap).reduce((a,b) => a+b.outsbal, 0);
   const grades = Object.keys(gradeMap).sort((a,b) => gradeMap[b].finamt - gradeMap[a].finamt);
   const colors = getGradientColors(grades.length);
+
+  // Generate briefing
+  briefingScript = generateBriefing(data, gradeMap, grades, totalFin, totalOut);
+  const briefBox = document.getElementById('briefing-box');
+  document.getElementById('briefing-text').textContent = briefingScript;
+  briefBox.style.display = 'block';
+
   document.getElementById('overview-cards').innerHTML = `
     <div class="card"><div class="card-label">Total Contracts</div><div class="card-value">${data.length.toLocaleString()}</div><div class="card-sub">All Grades</div></div>
     <div class="card"><div class="card-label">Total FINAMT</div><div class="card-value">${fmt(totalFin)}</div><div class="card-sub">Finance Amount</div></div>
@@ -360,8 +432,8 @@ function renderOverview(data) {
     <div class="card"><div class="card-label">Grades</div><div class="card-value">${grades.length}</div><div class="card-sub">Customer Grades</div></div>
   `;
 
-  makeBarChart('gradeChart', grades, grades.map(g => Math.round(gradeMap[g].finamt)), colors);
-  makeDoughnutChart('countChart', grades, grades.map(g => gradeMap[g].count), colors);
+  makeBarChart('gradeChart', grades, grades.map(g => Math.round(gradeMap[g].finamt)));
+  makeDoughnutChart('countChart', grades, grades.map(g => gradeMap[g].count));
 
   let html = `<tr><th>Grade</th><th>Contracts</th><th>Total FINAMT</th><th>Avg FINAMT</th><th>Outstanding</th><th>Share</th></tr>`;
   grades.forEach((g,i) => {
@@ -371,6 +443,7 @@ function renderOverview(data) {
   document.getElementById('gradeTable').innerHTML = html;
 }
 
+// ── Customer Group ────────────────────────────────────────────
 function renderCustomerGroup(data) {
   const cgMap = {};
   let totalFin = 0;
@@ -379,17 +452,12 @@ function renderCustomerGroup(data) {
     const cgCode = (row['customerGroupCode'] || '-').trim();
     const fin = parseFloat((row['FINAMT']+'').replace(/,/g,'')) || 0;
     const out = parseFloat((row['OUTSBAL']+'').replace(/,/g,'')) || 0;
-    if (!cgMap[cg]) cgMap[cg] = { count:0, finamt:0, outsbal:0, code: cgCode };
+    if (!cgMap[cg]) cgMap[cg] = { count:0, finamt:0, outsbal:0, code:cgCode };
     cgMap[cg].count++; cgMap[cg].finamt += fin; cgMap[cg].outsbal += out;
     totalFin += fin;
   });
-
   const totalOut = Object.values(cgMap).reduce((a,b) => a+b.outsbal, 0);
-
-  // Store all groups sorted by finamt
-  cgAllData = Object.entries(cgMap)
-    .sort((a,b) => b[1].finamt - a[1].finamt)
-    .map(([name, d]) => ({ name, ...d, totalFin }));
+  cgAllData = Object.entries(cgMap).sort((a,b) => b[1].finamt - a[1].finamt).map(([name,d]) => ({name,...d,totalFin}));
 
   document.getElementById('cg-cards').innerHTML = `
     <div class="card"><div class="card-label">Total Contracts</div><div class="card-value">${data.length.toLocaleString()}</div><div class="card-sub">All Groups</div></div>
@@ -398,18 +466,21 @@ function renderCustomerGroup(data) {
     <div class="card"><div class="card-label">Avg FINAMT</div><div class="card-value">${fmt(totalFin/data.length)}</div><div class="card-sub">Per Contract</div></div>
     <div class="card"><div class="card-label">Groups</div><div class="card-value">${cgAllData.length}</div><div class="card-sub">Customer Groups</div></div>
   `;
+  renderCGCharts(cgAllData.slice(0, cgLimit));
+}
 
+function filterCG(limit, btn) {
+  cgLimit = limit;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
   renderCGCharts(cgAllData.slice(0, cgLimit));
 }
 
 function renderCGCharts(groups) {
-  const totalFin = cgAllData.reduce((a,b) => a + b.finamt, 0);
-  // Already sorted by finamt descending — assign gradient accordingly
+  const totalFin = cgAllData.reduce((a,b) => a+b.finamt, 0);
   const colors = getGradientColors(groups.length);
-
-  makeBarChart('cgFinChart', groups.map(g => g.name), groups.map(g => Math.round(g.finamt)), colors);
-  makeDoughnutChart('cgCountChart', groups.map(g => g.name), groups.map(g => g.count), colors);
-
+  makeBarChart('cgFinChart', groups.map(g=>g.name), groups.map(g=>Math.round(g.finamt)));
+  makeDoughnutChart('cgCountChart', groups.map(g=>g.name), groups.map(g=>g.count));
   let html = `<tr><th>Rank</th><th>Customer Group</th><th>Code</th><th>Contracts</th><th>Total FINAMT</th><th>Avg FINAMT</th><th>Outstanding</th><th>Share</th></tr>`;
   groups.forEach((g,i) => {
     html += `<tr><td style="color:${colors[i]}">#${i+1}</td><td>${g.name}</td><td style="color:#555">${g.code}</td><td>${g.count.toLocaleString()}</td><td>${fmtFull(g.finamt)}</td><td>${fmtFull(g.finamt/g.count)}</td><td>${fmtFull(g.outsbal)}</td><td style="color:${colors[i]}">${((g.finamt/totalFin)*100).toFixed(1)}%</td></tr>`;
