@@ -217,13 +217,12 @@ function toggleSpeak() {
 function startSpeak() {
   window.speechSynthesis.cancel();
   const utt = new SpeechSynthesisUtterance(briefingScript);
-  utt.lang = 'th-TH';
-  utt.rate = 0.88;
+  utt.lang = 'en-US';
+  utt.rate = 0.92;
   utt.pitch = 1.0;
 
-  // Pick Thai voice if available
   const voices = window.speechSynthesis.getVoices();
-  const preferred = voices.find(v => v.lang === 'th-TH' || v.name.includes('Thai'));
+  const preferred = voices.find(v => v.name.includes('Google') || v.name.includes('Daniel') || v.name.includes('Alex'));
   if (preferred) utt.voice = preferred;
 
   utt.onend = () => { isSpeaking = false; updateSpeakBtn(); };
@@ -259,53 +258,51 @@ function generateBriefing(data, gradeMap, grades, totalFin, totalOut) {
   const vipD = gradeMap['VIP'];
   const contracts = data.length;
   const now = new Date();
-  const dateStr = now.toLocaleDateString('th-TH', { day:'numeric', month:'long', year:'numeric' });
+  const dateStr = now.toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
   const hour = now.getHours();
-  const greeting = hour < 12 ? 'อรุณสวัสดิ์ครับ' : hour < 17 ? 'สวัสดีตอนบ่ายครับ' : 'สวัสดีตอนเย็นครับ';
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
 
   let s = '';
+  s += `${greeting}. Today is ${dateStr}. `;
+  s += `Let me walk you through the Alpha X portfolio snapshot for today. `;
 
-  s += `${greeting} `;
-  s += `วันนี้วันที่ ${dateStr} `;
-  s += `ผมขอสรุปภาพรวมพอร์ตโฟลิโอของ Alpha X ให้ฟังนะครับ `;
+  s += `As of now, we're managing a total of ${contracts.toLocaleString()} contracts, `;
+  s += `with a combined finance value of around ${fmtSpeak(totalFin)}. `;
+  s += `Our outstanding balance currently sits at ${fmtSpeak(totalOut)}. `;
 
-  s += `ณ วันนี้ เรามีสัญญาที่ดูแลอยู่ทั้งหมด ${contracts.toLocaleString('th-TH')} สัญญา `;
-  s += `คิดเป็นมูลค่าสินเชื่อรวมกันประมาณ ${fmtSpeak(totalFin)} `;
-  s += `ส่วนยอดคงค้างตอนนี้อยู่ที่ ${fmtSpeak(totalOut)} ครับ `;
-
-  s += `ถ้าดูตามกลุ่มลูกค้า กลุ่ม ${top} ยังคงเป็นกลุ่มหลักของเรา `;
-  s += `คิดเป็นสัดส่วนถึง ${topPct} เปอร์เซ็นต์ของพอร์ตโฟลิโอทั้งหมด `;
-  s += `มีสัญญาอยู่ ${topD.count.toLocaleString('th-TH')} สัญญา `;
-  s += `และมูลค่าเฉลี่ยต่อสัญญาอยู่ที่ ${fmtSpeak(topD.finamt / topD.count)} `;
+  s += `Looking at our customer segments, the ${top} group continues to lead the portfolio, `;
+  s += `making up ${topPct} percent of total finance value `;
+  s += `across ${topD.count.toLocaleString()} contracts, `;
+  s += `with an average deal size of ${fmtSpeak(topD.finamt / topD.count)}. `;
 
   if (vipD) {
     const vipAvg = vipD.finamt / vipD.count;
     const overallAvg = totalFin / contracts;
     const vipPremium = ((vipAvg / overallAvg - 1) * 100).toFixed(0);
-    s += `สำหรับกลุ่ม VIP นั้น `;
-    s += `แม้จะมีจำนวนสัญญาไม่มากนัก คือประมาณ ${((vipD.count / contracts) * 100).toFixed(1)} เปอร์เซ็นต์เท่านั้น `;
-    s += `แต่มูลค่าเฉลี่ยต่อสัญญาสูงกว่าค่าเฉลี่ยพอร์ตโฟลิโอถึง ${vipPremium} เปอร์เซ็นต์เลยครับ `;
-    s += `ถือว่าเป็นกลุ่มที่สร้างมูลค่าสูงสุดต่อลูกค้าหนึ่งราย และควรให้ความสำคัญเป็นพิเศษ `;
+    s += `Now, what's really worth noting is our VIP segment. `;
+    s += `They only account for about ${((vipD.count / contracts) * 100).toFixed(1)} percent of contracts, `;
+    s += `but their average deal size is ${vipPremium} percent above the portfolio average. `;
+    s += `That makes them our highest-value clients per account, and they deserve our full attention. `;
   }
 
   const smallest = grades[grades.length - 1];
   const smallD = gradeMap[smallest];
-  s += `ในขณะที่กลุ่ม ${smallest} มีสัดส่วนอยู่ที่ ${((smallD.finamt / totalFin) * 100).toFixed(1)} เปอร์เซ็นต์ `;
-  s += `ซึ่งยังมีโอกาสขยายตัวได้อีกมากครับ `;
+  s += `On the other end, the ${smallest} segment is at ${((smallD.finamt / totalFin) * 100).toFixed(1)} percent — `;
+  s += `which honestly represents a real growth opportunity if we play it right. `;
 
-  s += `โดยรวมแล้ว สิ่งที่ควรโฟกัสในช่วงนี้มีสองเรื่องหลักครับ `;
-  s += `หนึ่งคือรักษาฐานลูกค้า VIP ให้แน่น `;
-  s += `และสองคือหาโอกาสอัพเกรดลูกค้ากลุ่ม Prime ขึ้นมา `;
-  s += `เพื่อให้พอร์ตโฟลิโอโดยรวมแข็งแกร่งขึ้น `;
-  s += `เท่านี้ก็ครบสรุปของวันนี้แล้วครับ ขอบคุณครับ`;
+  s += `So to wrap up — two things to keep in mind going forward. `;
+  s += `First, protect and nurture our VIP relationships. `;
+  s += `Second, look for ways to move Prime clients up the value chain. `;
+  s += `That's how we strengthen this portfolio over time. `;
+  s += `That's all for today's briefing. Have a great day.`;
 
   return s;
 }
 
 function fmtSpeak(n) {
-  if (n >= 1e9) return (n/1e9).toFixed(2) + ' พันล้านบาท';
-  if (n >= 1e6) return Math.round(n/1e6) + ' ล้านบาท';
-  return Math.round(n).toLocaleString('th-TH') + ' บาท';
+  if (n >= 1e9) return (n/1e9).toFixed(2) + ' billion baht';
+  if (n >= 1e6) return Math.round(n/1e6) + ' million baht';
+  return Math.round(n).toLocaleString() + ' baht';
 }
 
 // ── Helpers ──────────────────────────────────────────────────
