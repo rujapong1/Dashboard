@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alpha X — Daily Contract Report</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+body { background: #0a0a0a; color: #e8e8e8; min-height: 100vh; }
+
+/* TOPBAR */
+.topbar {
+  background: #0a0a0a;
+  border-bottom: 1px solid #1e1e1e;
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.logo-text {
+  font-size: 22px;
+  font-weight: 300;
+  letter-spacing: 8px;
+  color: white;
+  text-transform: uppercase;
+}
+.logo-text span {
+  color: #cc0000;
+  font-weight: 400;
+}
+.logo-divider {
+  width: 1px;
+  height: 28px;
+  background: #333;
+}
+.logo-subtitle {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #555;
+  text-transform: uppercase;
+}
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.last-updated {
+  font-size: 11px;
+  color: #444;
+  letter-spacing: 1px;
+}
+.refresh-btn {
+  padding: 7px 18px;
+  background: transparent;
+  color: #888;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.refresh-btn:hover { border-color: #cc0000; color: #cc0000; }
+
+/* NAV */
+.nav {
+  background: #0d0d0d;
+  border-bottom: 1px solid #1a1a1a;
+  padding: 0 32px;
+  display: flex;
+  gap: 0;
+}
+.nav-btn {
+  padding: 14px 24px;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #444;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.nav-btn:hover { color: #aaa; }
+.nav-btn.active { color: white; border-bottom: 2px solid #cc0000; }
+
+/* CONTENT */
+.content { padding: 32px; }
+.page { display: none; }
+.page.active { display: block; }
+
+/* PAGE HEADER */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 28px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #1a1a1a;
+}
+.page-title {
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: 2px;
+  color: white;
+  text-transform: uppercase;
+}
+.page-title span { color: #cc0000; }
+.page-date { font-size: 11px; color: #444; letter-spacing: 1px; }
+
+/* STATUS */
+.status {
+  padding: 12px 16px;
+  border-radius: 4px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  margin-bottom: 24px;
+  border-left: 3px solid transparent;
+}
+.loading { background: #0f0f0f; border-left-color: #cc0000; color: #888; }
+.error { background: #1a0000; border-left-color: #cc0000; color: #ff4444; }
+.success { background: #0a0a0a; border-left-color: #2a7a4b; color: #444; }
+.spinner {
+  display: inline-block; width: 10px; height: 10px;
+  border: 1px solid #cc0000; border-top-color: transparent;
+  border-radius: 50%; animation: spin 0.8s linear infinite;
+  margin-right: 8px; vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* CARDS */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1px; margin-bottom: 24px; background: #1a1a1a; border: 1px solid #1a1a1a; }
+.card { background: #0d0d0d; padding: 24px 20px; position: relative; overflow: hidden; transition: background 0.2s; }
+.card:hover { background: #111; }
+.card::before { content: ''; position: absolute; top: 0; left: 0; width: 2px; height: 0; background: #cc0000; transition: height 0.3s; }
+.card:hover::before { height: 100%; }
+.card-label { font-size: 10px; letter-spacing: 3px; color: #444; text-transform: uppercase; margin-bottom: 12px; }
+.card-value { font-size: 22px; font-weight: 300; color: white; }
+.card-sub { font-size: 10px; color: #333; margin-top: 6px; letter-spacing: 1px; text-transform: uppercase; }
+
+/* CHARTS */
+.charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.chart-box { background: #0d0d0d; border: 1px solid #1a1a1a; padding: 24px; }
+.chart-title { font-size: 10px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 20px; }
+
+/* TABLE */
+.table-box { background: #0d0d0d; border: 1px solid #1a1a1a; padding: 24px; overflow-x: auto; }
+.table-title { font-size: 10px; letter-spacing: 3px; color: #555; text-transform: uppercase; margin-bottom: 20px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { text-align: left; padding: 10px 14px; color: #444; font-weight: 400; letter-spacing: 2px; font-size: 10px; text-transform: uppercase; border-bottom: 1px solid #1a1a1a; }
+td { padding: 12px 14px; border-bottom: 1px solid #111; color: #aaa; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #111; color: #ccc; }
+
+/* BADGES */
+.badge { display: inline-block; padding: 3px 10px; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; border: 1px solid; }
+.badge-Preferred { border-color: #1a3a6e; color: #4d7fc4; background: #0a1628; }
+.badge-VIP { border-color: #6e4a00; color: #c49a00; background: #1a1200; }
+.badge-Prime { border-color: #0d3d22; color: #2a9a5b; background: #061a0f; }
+.badge-PrimeA { border-color: #3d1a4e; color: #9a4dcc; background: #1a0a28; }
+.badge-Unknown { border-color: #2a2a2a; color: #555; background: #111; }
+
+.filter-btn {
+  padding: 6px 14px;
+  background: transparent;
+  color: #555;
+  border: 1px solid #2a2a2a;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.filter-btn:hover { border-color: #cc0000; color: #cc0000; }
+.filter-btn.active { border-color: #cc0000; color: #cc0000; background: #1a0000; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-text">ALPHA <span>X</span></div>
+    <div class="logo-divider"></div>
+    <div class="logo-subtitle">Contract Intelligence</div>
+  </div>
+  <div class="topbar-right">
+    <div class="last-updated" id="lastUpdated">—</div>
+    <button class="refresh-btn" onclick="loadData()">↻ Refresh</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <button class="nav-btn active" onclick="showPage('overview', this)">Overview</button>
+  <button class="nav-btn" onclick="showPage('customergroup', this)">Customer Group</button>
+</div>
+
+<div class="content">
+  <div class="status loading" id="status"><span class="spinner"></span>Initializing data feed...</div>
+
+  <!-- PAGE 1: Overview -->
+  <div class="page active" id="page-overview">
+    <div class="page-header">
+      <div>
+        <div class="red-line"></div>
+        <div class="page-title">Portfolio <span>Overview</span></div>
+      </div>
+      <div class="page-date" id="overview-date"></div>
+    </div>
+    <div class="cards" id="overview-cards"></div>
+    <div class="charts">
+      <div class="chart-box">
+        <div class="chart-title">Finance Amount — by Grade</div>
+        <div style="position:relative;height:260px;"><canvas id="gradeChart"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">Contract Distribution — by Grade</div>
+        <div style="position:relative;height:260px;"><canvas id="countChart"></canvas></div>
+      </div>
+    </div>
+    <div class="table-box">
+      <div class="table-title">Grade Breakdown</div>
+      <table id="gradeTable"></table>
+    </div>
+  </div>
+
+  <!-- PAGE 2: Customer Group -->
+  <div class="page" id="page-customergroup">
+    <div class="page-header">
+      <div>
+        <div class="red-line"></div>
+        <div class="page-title">Customer <span>Group</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="page-date" id="cg-date"></div>
+        <div style="display:flex;gap:6px;">
+          <button class="filter-btn active" onclick="filterCG(10, this)">TOP 10</button>
+          <button class="filter-btn" onclick="filterCG(20, this)">TOP 20</button>
+          <button class="filter-btn" onclick="filterCG(50, this)">TOP 50</button>
+          <button class="filter-btn" onclick="filterCG(100, this)">TOP 100</button>
+        </div>
+      </div>
+    </div>
+    <div class="cards" id="cg-cards"></div>
+    <div class="charts">
+      <div class="chart-box">
+        <div class="chart-title">Finance Amount — by Group</div>
+        <div style="position:relative;height:260px;"><canvas id="cgFinChart"></canvas></div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">Contract Distribution — by Group</div>
+        <div style="position:relative;height:260px;"><canvas id="cgCountChart"></canvas></div>
+      </div>
+    </div>
+    <div class="table-box">
+      <div class="table-title">Group Breakdown</div>
+      <table id="cgTable"></table>
+    </div>
+  </div>
+</div>
+
+<script>
+const CSV_MAIN = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHq7api2ykc_3wZJamo1c5Ji8hoLYIYgrUm1cjyipwMtI8qierlbtz_9Xi26sQnq9y3mCZPT23lK2V/pub?gid=75439502&single=true&output=csv';
+const CSV_REF  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRPowqQ9r0-5IbYgXrdiZLOyj9FmLBsIkVIFaRX4FR2QxcKVUJgBw8xg34UJW1ZEA/pub?gid=213159971&single=true&output=csv';
+const PROXIES  = [
+  u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+  u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+  u => `https://thingproxy.freeboard.io/fetch/${u}`,
+  u => `https://yacdn.org/proxy/${u}`,
+];
+
+let charts = {};
+let cgData = [];
+let cgLimit = 10;
+
+function filterCG(limit, btn) {
+  cgLimit = limit;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCustomerGroupCharts(cgData, cgLimit);
+}
+const CHART_COLORS = ['#cc0000','#e8e8e8','#888888','#ff6644','#aaaaaa','#ff9977','#cccccc','#ff4422','#999999','#ffbbaa'];
+const GRID_COLOR = 'rgba(255,255,255,0.04)';
+const TICK_COLOR = '#444';
+
+Chart.defaults.color = TICK_COLOR;
+Chart.defaults.borderColor = GRID_COLOR;
+
+window.onload = () => loadData();
+
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function fmt(n) {
+  if (isNaN(n) || n === 0) return '฿0';
+  if (n >= 1e9) return '฿' + (n/1e9).toFixed(2) + 'B';
+  if (n >= 1e6) return '฿' + (n/1e6).toFixed(2) + 'M';
+  return '฿' + Math.round(n).toLocaleString();
+}
+function fmtFull(n) { return '฿' + Math.round(n || 0).toLocaleString(); }
+function badgeClass(g) {
+  const map = { 'Preferred':'Preferred','VIP':'VIP','Prime':'Prime','Prime A':'PrimeA' };
+  return 'badge badge-' + (map[g] || 'Unknown');
+}
+function setStatus(msg, type, spin) {
+  const el = document.getElementById('status');
+  el.innerHTML = (spin ? '<span class="spinner"></span>' : '') + msg;
+  el.className = 'status ' + type;
+}
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+async function fetchCSV(url) {
+  // Method 1: Direct fetch via browser
+  try {
+    const res = await fetch(url);
+    const text = await res.text();
+    const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
+    if (parsed.data && parsed.data.length > 0 && Object.keys(parsed.data[0]).length > 1) {
+      console.log('✅ Direct fetch worked:', parsed.data.length, 'rows');
+      return parsed.data;
+    }
+  } catch(e) { console.warn('Direct fetch failed:', e.message); }
+
+  // Method 2: Try each proxy
+  for (let i = 0; i < PROXIES.length; i++) {
+    try {
+      const proxyUrl = PROXIES[i](url);
+      const res = await fetch(proxyUrl);
+      const text = await res.text();
+      const parsed = Papa.parse(text, { header: true, skipEmptyLines: true });
+      if (parsed.data && parsed.data.length > 0 && Object.keys(parsed.data[0]).length > 1) {
+        console.log(`✅ Proxy ${i+1} worked:`, parsed.data.length, 'rows');
+        return parsed.data;
+      }
+    } catch(e) { console.warn(`Proxy ${i+1} failed:`, e.message); }
+  }
+
+  // Method 3: PapaParse download as last resort
+  for (let i = 0; i < PROXIES.length; i++) {
+    try {
+      return await new Promise((res, rej) => {
+        Papa.parse(PROXIES[i](url), {
+          download: true, header: true, skipEmptyLines: true,
+          complete: r => (r.data && r.data.length > 0 && Object.keys(r.data[0]).length > 1) ? res(r.data) : rej('empty'),
+          error: () => rej('error')
+        });
+      });
+    } catch(e) { console.warn(`PapaParse proxy ${i+1} failed`); }
+  }
+
+  throw new Error('All fetch methods failed');
+}
+
+async function loadData() {
+  setStatus('Initializing data feed...', 'loading', true);
+  try {
+    const [mainData, refData] = await Promise.all([fetchCSV(CSV_MAIN), fetchCSV(CSV_REF)]);
+
+    const refMap = {};
+    refData.forEach(row => {
+      const contno = (row['CONTNO'] || '').trim();
+      if (contno && !refMap[contno]) {
+        refMap[contno] = {
+          seniorRM: (row['Senior RM'] || '').trim(),
+          customerGroup: (row['Customer Group'] || '').trim(),
+          customerGroupCode: (row['Customer Group Code'] || '').trim()
+        };
+      }
+    });
+
+    const joined = mainData.map(row => {
+      const contno = (row['CONTNO'] || '').trim();
+      const ref = refMap[contno] || { seniorRM: 'Unknown', customerGroup: 'Unknown', customerGroupCode: '-' };
+      return { ...row, ...ref };
+    });
+
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }).toUpperCase();
+    const timeStr = now.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+
+    setStatus(`Data synchronized — ${joined.length.toLocaleString()} contracts loaded`, 'success');
+    document.getElementById('lastUpdated').textContent = dateStr + ' · ' + timeStr;
+    document.getElementById('overview-date').textContent = dateStr;
+    document.getElementById('cg-date').textContent = dateStr;
+
+    renderOverview(joined);
+    renderCustomerGroup(joined);
+  } catch(e) {
+    setStatus('Data feed unavailable. Please check connection and retry.', 'error');
+  }
+}
+
+function makeBarChart(id, labels, values, colors) {
+  destroyChart(id);
+  charts[id] = new Chart(document.getElementById(id), {
+    type: 'bar',
+    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderRadius: 0, borderWidth: 0 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: GRID_COLOR }, ticks: { color: TICK_COLOR, font: { size: 10 } } },
+        y: { grid: { color: GRID_COLOR }, ticks: { color: TICK_COLOR, font: { size: 10 }, callback: v => fmt(v) } }
+      }
+    }
+  });
+}
+
+function makeDoughnutChart(id, labels, values, colors) {
+  destroyChart(id);
+  charts[id] = new Chart(document.getElementById(id), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 1, borderColor: '#0a0a0a' }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '65%',
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, color: '#555', padding: 12, boxWidth: 10 } } }
+    }
+  });
+}
+
+function renderOverview(data) {
+  const gradeMap = {};
+  let totalFin = 0;
+  data.forEach(row => {
+    const grade = (row['Customer Grade'] || 'Unknown').trim();
+    const fin = parseFloat((row['FINAMT']+'').replace(/,/g,'')) || 0;
+    const out = parseFloat((row['OUTSBAL']+'').replace(/,/g,'')) || 0;
+    if (!gradeMap[grade]) gradeMap[grade] = { count:0, finamt:0, outsbal:0 };
+    gradeMap[grade].count++; gradeMap[grade].finamt += fin; gradeMap[grade].outsbal += out;
+    totalFin += fin;
+  });
+
+  const totalOut = Object.values(gradeMap).reduce((a,b) => a+b.outsbal, 0);
+  const grades = Object.keys(gradeMap).sort((a,b) => gradeMap[b].finamt - gradeMap[a].finamt);
+  const colors = grades.map((_,i) => CHART_COLORS[i % CHART_COLORS.length]);
+
+  document.getElementById('overview-cards').innerHTML = `
+    <div class="card"><div class="card-label">Total Contracts</div><div class="card-value">${data.length.toLocaleString()}</div><div class="card-sub">All Grades</div></div>
+    <div class="card"><div class="card-label">Total FINAMT</div><div class="card-value">${fmt(totalFin)}</div><div class="card-sub">Finance Amount</div></div>
+    <div class="card"><div class="card-label">Outstanding</div><div class="card-value">${fmt(totalOut)}</div><div class="card-sub">OUTSBAL</div></div>
+    <div class="card"><div class="card-label">Avg FINAMT</div><div class="card-value">${fmt(totalFin/data.length)}</div><div class="card-sub">Per Contract</div></div>
+    <div class="card"><div class="card-label">Grades</div><div class="card-value">${grades.length}</div><div class="card-sub">Customer Grades</div></div>
+  `;
+
+  makeBarChart('gradeChart', grades, grades.map(g => Math.round(gradeMap[g].finamt)), colors);
+  makeDoughnutChart('countChart', grades, grades.map(g => gradeMap[g].count), colors);
+
+  let html = `<tr><th>Grade</th><th>Contracts</th><th>Total FINAMT</th><th>Avg FINAMT</th><th>Outstanding</th><th>Share</th></tr>`;
+  grades.forEach((g,i) => {
+    const d = gradeMap[g];
+    html += `<tr><td><span class="${badgeClass(g)}">${g}</span></td><td>${d.count.toLocaleString()}</td><td>${fmtFull(d.finamt)}</td><td>${fmtFull(d.finamt/d.count)}</td><td>${fmtFull(d.outsbal)}</td><td style="color:${colors[i]}">${((d.finamt/totalFin)*100).toFixed(1)}%</td></tr>`;
+  });
+  document.getElementById('gradeTable').innerHTML = html;
+}
+
+function renderCustomerGroup(data) {
+  const cgMap = {};
+  let totalFin = 0;
+  data.forEach(row => {
+    const cg = (row['customerGroup'] || 'Unknown').trim();
+    const cgCode = (row['customerGroupCode'] || '-').trim();
+    const fin = parseFloat((row['FINAMT']+'').replace(/,/g,'')) || 0;
+    const out = parseFloat((row['OUTSBAL']+'').replace(/,/g,'')) || 0;
+    if (!cgMap[cg]) cgMap[cg] = { count:0, finamt:0, outsbal:0, code: cgCode };
+    cgMap[cg].count++; cgMap[cg].finamt += fin; cgMap[cg].outsbal += out;
+    totalFin += fin;
+  });
+
+  const totalOut = Object.values(cgMap).reduce((a,b) => a+b.outsbal, 0);
+
+  // Store full sorted data globally
+  cgData = Object.entries(cgMap)
+    .sort((a,b) => b[1].finamt - a[1].finamt)
+    .map(([name, d]) => ({ name, ...d }));
+
+  // Cards always show all groups
+  document.getElementById('cg-cards').innerHTML = `
+    <div class="card"><div class="card-label">Total Contracts</div><div class="card-value">${data.length.toLocaleString()}</div><div class="card-sub">All Groups</div></div>
+    <div class="card"><div class="card-label">Total FINAMT</div><div class="card-value">${fmt(totalFin)}</div><div class="card-sub">Finance Amount</div></div>
+    <div class="card"><div class="card-label">Outstanding</div><div class="card-value">${fmt(totalOut)}</div><div class="card-sub">OUTSBAL</div></div>
+    <div class="card"><div class="card-label">Avg FINAMT</div><div class="card-value">${fmt(totalFin/data.length)}</div><div class="card-sub">Per Contract</div></div>
+    <div class="card"><div class="card-label">Groups</div><div class="card-value">${cgData.length}</div><div class="card-sub">Customer Groups</div></div>
+  `;
+
+  renderCustomerGroupCharts(cgData, cgLimit);
+}
+
+function renderCustomerGroupCharts(allGroups, limit) {
+  const groups = allGroups.slice(0, limit);
+  const totalFin = allGroups.reduce((a,b) => a + b.finamt, 0);
+  const colors = groups.map((_,i) => CHART_COLORS[i % CHART_COLORS.length]);
+
+  makeBarChart('cgFinChart', groups.map(g => g.name), groups.map(g => Math.round(g.finamt)), colors);
+  makeDoughnutChart('cgCountChart', groups.map(g => g.name), groups.map(g => g.count), colors);
+
+  let html = `<tr><th>Rank</th><th>Customer Group</th><th>Code</th><th>Contracts</th><th>Total FINAMT</th><th>Avg FINAMT</th><th>Outstanding</th><th>Share</th></tr>`;
+  groups.forEach((g, i) => {
+    html += `<tr><td style="color:#555">#${i+1}</td><td>${g.name}</td><td style="color:#555">${g.code}</td><td>${g.count.toLocaleString()}</td><td>${fmtFull(g.finamt)}</td><td>${fmtFull(g.finamt/g.count)}</td><td>${fmtFull(g.outsbal)}</td><td style="color:${colors[i]}">${((g.finamt/totalFin)*100).toFixed(1)}%</td></tr>`;
+  });
+  document.getElementById('cgTable').innerHTML = html;
+}
+</script>
+</body>
+</html>
